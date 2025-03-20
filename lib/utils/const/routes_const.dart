@@ -1,39 +1,4 @@
 class RouteList {
   RouteList._();
-  static const String inital = '/';
-  static const String login = "/login";
-  static const String noInternet = "/noInternet";
-  static const String forgotPassword = "/forgotPassword";
-  static const String verifyCode = "/verifyCode";
-  static const String resetPassword = "/resetPassword";
-  static const String home = '/home';
-  static const String report = '/report';
-  static const String permission = '/permission';
-  static const String permissionApply = "/permissionApply";
-  static const String leave = '/leave';
-  static const String leaveApply = '/leaveApply';
-  static const String leaveDetail = '/leaveDetail';
-  static const String leaveApproval = '/leaveApproval';
-  static const String leaveApprovalView = '/leaveApprovalView';
-  static const String permissionView = "/permissionView";
-  static const String permissionDetails = "/permissionDetails";
-  static const String permissionApproval = "/permissionApproval";
-  static const String timesheetsummary = '/timesheetsummary';
-  static const String timesheetdetails = '/timesheetdetails';
-  static const String timesheetapprovalsummary = '/timesheetapprovalsummary';
-  static const String timesheetapprovalview = '/timesheetapprovalview';
-  static const String viewclient = "/viewclient";
-  static const String projectview = '/projectview';
-  static const String approvals = '/approvals';
-  static const String attendance = '/attendance';
-  static const String homeScreen = '/homescreen';
-  static const String more = '/more';
-  static const String regularization = '/regularization';
-  static const String regularizationApproval = '/regularizationApproval';
-  static const String regularizationDetails = '/regularizationDetails';
-  static const String regularizationApply = '/regularizationApply';
-  static const String regularizationView = '/regularizationView';
-  static const String dashboard = '/dashboard';
-  static const String notification = '/notification';
-  static const String myreq = '/myreq';
+ 
 }
