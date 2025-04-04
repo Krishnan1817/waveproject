@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_profile_second.dart';
+import 'package:waveproject/features/Wave_AddProfile/presentation/widgets/Addressmodal.dart';
+import 'package:waveproject/features/Wave_AddProfile/presentation/widgets/phoneDialoguebox.dart';
+import 'package:waveproject/utils/const/color_const.dart';
 
 class AddProfilePage extends StatefulWidget {
   @override
@@ -13,7 +18,16 @@ class _AddProfilePageState extends State<AddProfilePage> {
   String? criminalType;
   String? gender;
   DateTime? selectedDate;
+  String? nationality;
+  String? religion;
+  String? casteCommunity;
+  String? maritalStatus;
+  String? educationQualification;
+  String? profession;
+  bool convertToprofile = false;
 
+  int profiletab = 1;
+  final TextEditingController searchID = TextEditingController();
   final TextEditingController udaiController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController aliasController = TextEditingController();
@@ -30,16 +44,15 @@ class _AddProfilePageState extends State<AddProfilePage> {
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Colors.greenAccent, // Header & Active Date Color
+            primaryColor: Colors.greenAccent,
             colorScheme: ColorScheme.light(primary: Colors.greenAccent),
-            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
           ),
           child: child!,
         );
       },
     );
 
-    if (picked != null && picked != selectedDate) {
+    if (picked != null) {
       setState(() {
         selectedDate = picked;
         dobController.text = "${picked.day}/${picked.month}/${picked.year}";
@@ -47,13 +60,72 @@ class _AddProfilePageState extends State<AddProfilePage> {
     }
   }
 
+  // Function to display the bottom sheet for gender selection
+  void _showBottomSheet(List<String> options, Function(String) onSelect) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return ListView(
+          children: options.map((String option) {
+            return ListTile(
+              title: Text(option),
+              onTap: () {
+                onSelect(option);
+                Navigator.pop(
+                    context); // Close the bottom sheet after selection
+              },
+            );
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildDropdown(String title, String? selectedValue,
+      List<String> options, Function(String) onSelect) {
+    return GestureDetector(
+      onTap: () => _showBottomSheet(options, onSelect),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              selectedValue ?? "Select $title",
+              style: TextStyle(
+                color: selectedValue == null ? Colors.black : Colors.black,
+                fontSize: 16,
+              ),
+            ),
+            Icon(Icons.keyboard_arrow_down),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Profile"),
-        backgroundColor: Colors.greenAccent,
-      ),
+          leading: InkWell(
+            onTap: () {
+              Get.back();
+            },
+            child: Icon(
+              Icons.arrow_back,
+              color: Colors.white,
+            ),
+          ),
+          title: Text(
+            "Add Profile",
+            style: TextStyle(color: Colors.white),
+          ),
+          backgroundColor: ColorConstants.commonbackground),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Form(
@@ -64,109 +136,119 @@ class _AddProfilePageState extends State<AddProfilePage> {
               children: [
                 Row(
                   children: [
-                    Text("Assign as Gang Leader"),
-                    Checkbox(
-                      checkColor: Colors.white,
-                      value: isChecked,
+                    Center(
+                      child: Text(
+                        'Convert to Profile',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Switch(
+                      activeColor: ColorConstants.commonbackground,
+                      value: convertToprofile,
                       onChanged: (value) {
                         setState(() {
-                          isChecked = value!;
+                          convertToprofile = value;
+                          print(convertToprofile);
                         });
                       },
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
+                Visibility(
+                  visible: convertToprofile,
+                  child: Row(
+                    children: [
+                      Text("Assign as Gang Leader"),
+                      Checkbox(
+                        activeColor: ColorConstants.commonbackground,
+                        value: isChecked,
+                        onChanged: (value) {
+                          setState(() {
+                            isChecked = value!;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Visibility(
+                  visible: !convertToprofile,
+                  child: TextFormField(
+                    controller: searchID,
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 140),
+                        labelText: "SEARCH ID",
+                        border: OutlineInputBorder()),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                SizedBox(height: !convertToprofile ? 10 : 0),
                 TextFormField(
                   controller: udaiController,
                   decoration: InputDecoration(
-                    labelText: "UDAI No",
-                    border: OutlineInputBorder(),
-                  ),
+                      labelText: "UDAI No", border: OutlineInputBorder()),
                   keyboardType: TextInputType.number,
                 ),
-                SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  value: criminalCategory,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  items: ["Category A", "Category B", "Category C"]
-                      .map((category) => DropdownMenuItem(
-                            value: category,
-                            child: Text(category),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      criminalCategory = value;
-                    });
-                  },
-                  hint: Text("Select Criminal Category"),
+                SizedBox(height: convertToprofile ? 10 : 0),
+                Visibility(
+                  visible: convertToprofile,
+                  child: _buildDropdown(
+                      "Criminal Category",
+                      criminalCategory,
+                      ["Category A", "Category B", "Category C"],
+                      (value) => setState(() => criminalCategory = value)),
                 ),
-                SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  value: subCategory,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  items: ["Subcategory 1", "Subcategory 2", "Subcategory 3"]
-                      .map((sub) => DropdownMenuItem(
-                            value: sub,
-                            child: Text(sub),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      subCategory = value;
-                    });
-                  },
-                  hint: Text("Select Sub Category"),
+                SizedBox(height: convertToprofile ? 10 : 0),
+                Visibility(
+                  visible: convertToprofile,
+                  child: _buildDropdown(
+                      "Sub Category",
+                      subCategory,
+                      ["Subcategory 1", "Subcategory 2", "Subcategory 3"],
+                      (value) => setState(() => subCategory = value)),
                 ),
-                SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  value: criminalType,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  items: ["Type 1", "Type 2", "Type 3"]
-                      .map((type) => DropdownMenuItem(
-                            value: type,
-                            child: Text(type),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      criminalType = value;
-                    });
-                  },
-                  hint: Text("Select Type of Criminal"),
+                SizedBox(height: convertToprofile ? 10 : 0),
+                Visibility(
+                  visible: convertToprofile,
+                  child: _buildDropdown(
+                      "Type of Criminal",
+                      criminalType,
+                      ["Type 1", "Type 2", "Type 3"],
+                      (value) => setState(() => criminalType = value)),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
                   controller: nameController,
                   decoration: InputDecoration(
-                    labelText: "Name",
-                    border: OutlineInputBorder(),
-                  ),
+                      labelText: "Name", border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
                   controller: aliasController,
                   decoration: InputDecoration(
-                    labelText: "Alias Name",
-                    border: OutlineInputBorder(),
-                  ),
+                      labelText: "Alias Name", border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
                   controller: reasonController,
                   decoration: InputDecoration(
-                    labelText: "Reason",
-                    border: OutlineInputBorder(),
-                  ),
+                      labelText: "Reason", border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
                   controller: parentageController,
                   decoration: InputDecoration(
-                    labelText: "Parentage Name",
-                    border: OutlineInputBorder(),
-                  ),
+                      labelText: "Parentage Name",
+                      border: OutlineInputBorder()),
                 ),
                 SizedBox(height: 10),
                 TextFormField(
@@ -182,59 +264,105 @@ class _AddProfilePageState extends State<AddProfilePage> {
                   readOnly: true,
                 ),
                 SizedBox(height: 10),
-                DropdownButtonFormField<String>(
-                  value: gender,
-                  decoration: InputDecoration(border: OutlineInputBorder()),
-                  items: ["Male", "Female", "Other"]
-                      .map((gen) => DropdownMenuItem(
-                            value: gen,
-                            child: Text(gen),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      gender = value;
-                    });
-                  },
-                  hint: Text("Select Gender"),
+                _buildDropdown("Gender", gender, ["Male", "Female", "Other"],
+                    (value) => setState(() => gender = value)),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF722020),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Get.to(() => PhoneDialoguemodel());
+                        },
+                        icon: Icon(Icons.phone, color: Colors.white),
+                      ),
+                    ),
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF722020),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          Get.to(() => AddressDialogscreen());
+                        },
+                        icon: Icon(Icons.home, color: Colors.white),
+                      ),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SizedBox(
-                      width: 150,
-                      height: 50, 
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Cancel",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFF722020),
+                              Color(0xFFC63333),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.greenAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
+                        child: InkWell(
+                          onTap: () {},
+                          borderRadius: BorderRadius.circular(12),
+                          child: Center(
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 150, 
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Save and Next",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFF722020),
+                              Color(0xFFC63333),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.greenAccent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                5), 
+                        child: InkWell(
+                          onTap: () {
+                            Get.to(() => AddProfile2());
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Center(
+                            child: Text(
+                              "Save and Next",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_profile.dart';
+import 'package:waveproject/utils/const/color_const.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -27,13 +28,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             _scaffoldKey.currentState?.openDrawer();
           },
         ),
-        backgroundColor: Colors.greenAccent,
+        backgroundColor: ColorConstants.commonbackground,
       ),
       drawer: Drawer(
         child: Column(
           children: [
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.greenAccent),
+              decoration: BoxDecoration(color: ColorConstants.commonbackground),
               child: Center(
                 child: Text(
                   'Menu',
@@ -175,7 +176,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _drawerItem(String title, IconData icon, VoidCallback onTap) {
     return ListTile(
-      leading: Icon(icon, color: Colors.greenAccent),
+      leading: Icon(icon, color: ColorConstants.commonbackground),
       title: Text(title, style: TextStyle(fontSize: 18)),
       onTap: onTap,
     );
