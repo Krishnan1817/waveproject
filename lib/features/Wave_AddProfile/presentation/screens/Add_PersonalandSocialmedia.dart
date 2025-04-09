@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_crimeArea.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/widgets/SocialmediaDialoguebox.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/widgets/vechicleDialoguebox.dart';
 import 'package:waveproject/utils/const/color_const.dart';
@@ -177,7 +178,9 @@ class _PersonalandSocialmediaState extends State<PersonalandSocialmedia> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Get.to(() => AddcrimeareaScreen());
+                      },
                       borderRadius: BorderRadius.circular(12),
                       child: Center(
                         child: Text(

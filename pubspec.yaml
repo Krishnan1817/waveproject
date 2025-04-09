@@ -55,6 +55,8 @@ dependencies:
   cupertino_icons:
   flutter_plugin_android_lifecycle: 2.0.14
   local_auth:
+  url_launcher:
+  location:
 
 dev_dependencies:
   flutter_test:

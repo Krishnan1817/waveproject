@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:waveproject/features/Wave_AddCase/presentation/screens/Addcase.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_profile.dart';
+import 'package:waveproject/features/Wave_AssignAssociates/presentation/screens/AssignAssociates.dart';
+import 'package:waveproject/features/Wave_CourtHiring/presentation/screens/CourtHiring.dart';
 import 'package:waveproject/utils/const/color_const.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -45,13 +48,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
             ),
-            _drawerItem('Court Hiring', Icons.gavel, () {}),
+            _drawerItem('Court Hiring', Icons.gavel, () {
+              Get.to(CourtHiringScreen());
+            }),
             _drawerItem('Assign Case', Icons.assignment, () {}),
-            _drawerItem('Assign Associates & Rivals', Icons.group, () {}),
+            _drawerItem('Assign Associates & Rivals', Icons.group, () {
+              Get.to(Assign_Associates_screen());
+            }),
             _drawerItem('Add Profile', Icons.person_add, () {
               Get.to(AddProfilePage());
             }),
-            _drawerItem('Add Case', Icons.add_box, () {}),
+            _drawerItem('Add Case', Icons.add_box, () {
+              Get.to(AddcaseScreen());
+            }),
           ],
         ),
       ),

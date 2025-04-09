@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_physical_status.dart';
+import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_profile.dart';
 import 'package:waveproject/utils/const/color_const.dart';
 
 class Socialnetwork extends StatefulWidget {
@@ -57,8 +58,8 @@ class _SocialnetworkState extends State<Socialnetwork> {
         padding: EdgeInsets.symmetric(horizontal: 15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: 25),
             _buildIconTitleRow(),
             SizedBox(height: 20),
             _buildSelectionContainer("Advocate"),
@@ -214,7 +215,9 @@ class _SocialnetworkState extends State<Socialnetwork> {
 
   Widget _buildSelectionContainer(String title) {
     return GestureDetector(
-      onTap: () => print("$title selected"),
+      onTap: () {
+        Get.to(() => AddProfilePage());
+      },
       child: Container(
         width: double.infinity,
         height: 60,
@@ -246,7 +249,7 @@ class _SocialnetworkState extends State<Socialnetwork> {
           children: [
             Text(
               selectedFamily ?? "Select Family",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16,color: Colors.black),
             ),
             Icon(Icons.arrow_drop_down, color: Colors.black),
           ],
