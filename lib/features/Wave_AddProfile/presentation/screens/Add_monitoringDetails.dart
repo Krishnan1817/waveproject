@@ -23,31 +23,69 @@ class _AddMonitoringdetailsScreenState
     'Officer B',
     'Officer C',
   ];
-
   void _showBottomSheet(
-      String title, List<String> options, Function(String) onSelect) {
+    String title,
+    List<String> options,
+    Function(String) onSelect,
+  ) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (_) => Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ...options.map((option) => ListTile(
-                  title: Text(option),
-                  onTap: () {
-                    onSelect(option);
-                    Navigator.pop(context);
-                  },
-                )),
-          ],
-        ),
-      ),
+      builder: (_) {
+        TextEditingController searchController = TextEditingController();
+        List<String> filteredOptions = List.from(options);
+
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            void _filterOptions(String query) {
+              setModalState(() {
+                filteredOptions = options
+                    .where((item) =>
+                        item.toLowerCase().contains(query.toLowerCase()))
+                    .toList();
+              });
+            }
+
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Container(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(title,
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        hintText: "Search...",
+                        prefixIcon: Icon(Icons.search),
+                        
+                      ),
+                      onChanged: _filterOptions,
+                    ),
+                    SizedBox(height: 10),
+                    ...filteredOptions.map(
+                      (option) => ListTile(
+                        title: Text(option),
+                        onTap: () {
+                          onSelect(option);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 

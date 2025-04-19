@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_profile_second.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/widgets/Addressmodal.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/widgets/phoneDialoguebox.dart';
@@ -25,6 +29,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
   String? educationQualification;
   String? profession;
   bool convertToprofile = false;
+  final ImagePicker _picker = ImagePicker();
+  File? _pickedImage;
 
   int profiletab = 1;
   final TextEditingController searchID = TextEditingController();
@@ -60,22 +66,72 @@ class _AddProfilePageState extends State<AddProfilePage> {
     }
   }
 
-  // Function to display the bottom sheet for gender selection
   void _showBottomSheet(List<String> options, Function(String) onSelect) {
+    TextEditingController searchController = TextEditingController();
+    List<String> filteredOptions = List.from(options);
+
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+      ),
       builder: (BuildContext context) {
-        return ListView(
-          children: options.map((String option) {
-            return ListTile(
-              title: Text(option),
-              onTap: () {
-                onSelect(option);
-                Navigator.pop(
-                    context); // Close the bottom sheet after selection
-              },
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            void _filterOptions(String query) {
+              setModalState(() {
+                filteredOptions = options
+                    .where((option) =>
+                        option.toLowerCase().contains(query.toLowerCase()))
+                    .toList();
+              });
+            }
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+                left: 16,
+                right: 16,
+                top: 20,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: searchController,
+                    onChanged: _filterOptions,
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      prefixIcon: Icon(Icons.search),
+                      // border: OutlineInputBorder(
+                      //   borderRadius: BorderRadius.circular(10),
+                      // ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.5,
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: filteredOptions.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(filteredOptions[index]),
+                          onTap: () {
+                            onSelect(filteredOptions[index]);
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             );
-          }).toList(),
+          },
         );
       },
     );
@@ -145,16 +201,13 @@ class _AddProfilePageState extends State<AddProfilePage> {
                             fontWeight: FontWeight.w600),
                       ),
                     ),
-                    SizedBox(
-                      width: 20,
-                    ),
+                    SizedBox(width: 20),
                     Switch(
                       activeColor: ColorConstants.commonbackground,
                       value: convertToprofile,
                       onChanged: (value) {
                         setState(() {
                           convertToprofile = value;
-                          print(convertToprofile);
                         });
                       },
                     ),
@@ -164,6 +217,28 @@ class _AddProfilePageState extends State<AddProfilePage> {
                   visible: convertToprofile,
                   child: Row(
                     children: [
+                      _pickedImage != null
+                          ? Image.file(
+                              _pickedImage!,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(),
+                      _pickedImage != null ? SizedBox(width: 20) : SizedBox(),
+                      InkWell(
+                        onTap: () async {
+                          final XFile? image = await _picker.pickImage(
+                              source: ImageSource.gallery);
+                          if (image != null) {
+                            setState(() {
+                              _pickedImage = File(image.path);
+                            });
+                          }
+                        },
+                        child: Icon(FontAwesomeIcons.camera, size: 35),
+                      ),
+                      SizedBox(width: 15),
                       Text("Assign as Gang Leader"),
                       Checkbox(
                         activeColor: ColorConstants.commonbackground,
@@ -177,9 +252,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                SizedBox(height: 10),
                 Visibility(
                   visible: !convertToprofile,
                   child: TextFormField(
@@ -369,9 +442,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 10,
-                )
+                SizedBox(height: 10),
               ],
             ),
           ),

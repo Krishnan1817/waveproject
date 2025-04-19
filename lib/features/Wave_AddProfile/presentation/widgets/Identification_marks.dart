@@ -180,46 +180,46 @@ class _IdentificationState extends State<Identification> {
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
         children: [
-          Container(
-            width: 100,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: GestureDetector(
-              onTap: () => _showDropdownBottomSheet(index),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        rows[index]['dropdownValue'] ??
-                            'Select Identification Mark',
-                        style: TextStyle(
-                          color: rows[index]['dropdownValue'] == null
-                              ? Colors.grey
-                              : Colors.black,
-                          fontSize: 16,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ),
-                    Icon(Icons.keyboard_arrow_down, color: Colors.black),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 20),
+          // Container(
+          //   width: 100,
+          //   decoration: BoxDecoration(
+          //     border: Border.all(color: Colors.grey),
+          //     borderRadius: BorderRadius.circular(5),
+          //   ),
+          //   child: GestureDetector(
+          //     onTap: () => _showDropdownBottomSheet(index),
+          //     child: Padding(
+          //       padding:
+          //           const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+          //       child: Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           Expanded(
+          //             child: Text(
+          //               rows[index]['dropdownValue'] ??
+          //                   'Select Identification Mark',
+          //               style: TextStyle(
+          //                 color: rows[index]['dropdownValue'] == null
+          //                     ? Colors.grey
+          //                     : Colors.black,
+          //                 fontSize: 16,
+          //               ),
+          //               overflow: TextOverflow.ellipsis,
+          //               maxLines: 1,
+          //             ),
+          //           ),
+          //           Icon(Icons.keyboard_arrow_down, color: Colors.black),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // SizedBox(width: 20),
           Expanded(
             child: TextFormField(
               controller: rows[index]['controller'],
               decoration: InputDecoration(
-                labelText: "Enter Details",
+                labelText: "Enter Identification Details",
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.text,

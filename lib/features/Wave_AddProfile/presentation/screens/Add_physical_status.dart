@@ -328,16 +328,7 @@ class _PhysicaldetailsState extends State<Physicaldetails> {
               SizedBox(
                 height: 15,
               ),
-              Center(
-                child: GestureDetector(
-                  onTap: _openBottomSheet,
-                  child: Icon(
-                    FontAwesomeIcons.fingerprint,
-                    size: 50,
-                    color: ColorConstants.commonbackground,
-                  ),
-                ),
-              ),
+           
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

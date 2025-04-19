@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:waveproject/utils/const/color_const.dart';
 
+import '../widgets/Managecase.dart';
+
 class AddcaseScreen extends StatefulWidget {
   const AddcaseScreen({super.key});
 
@@ -60,32 +62,64 @@ class _AddcaseScreenState extends State<AddcaseScreen> {
 
   void _showBottomSheet(
       String title, List<String> options, Function(String) onSelected) {
+    TextEditingController searchController = TextEditingController();
+    List<String> filteredOptions = List.from(options);
+
     showModalBottomSheet(
       context: context,
-      builder: (context) => Container(
-        height: 300,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Text(title,
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-            Expanded(
-              child: ListView.builder(
-                itemCount: options.length,
-                itemBuilder: (_, index) => ListTile(
-                  title: Text(options[index]),
-                  onTap: () {
-                    onSelected(options[index]);
-                    Navigator.pop(context);
-                  },
-                ),
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            void filterList(String query) {
+              setModalState(() {
+                filteredOptions = options
+                    .where((option) =>
+                        option.toLowerCase().contains(query.toLowerCase()))
+                    .toList();
+              });
+            }
+
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(title,
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: searchController,
+                    onChanged: filterList,
+                    decoration: InputDecoration(
+                      hintText: "Search...",
+                      prefixIcon: Icon(Icons.search),
+                      // border: OutlineInputBorder(
+                      //   borderRadius: BorderRadius.circular(8),
+                      // ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 250,
+                    child: ListView.builder(
+                      itemCount: filteredOptions.length,
+                      itemBuilder: (_, index) => ListTile(
+                        title: Text(filteredOptions[index]),
+                        onTap: () {
+                          onSelected(filteredOptions[index]);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            )
-          ],
-        ),
-      ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -340,19 +374,24 @@ class _AddcaseScreenState extends State<AddcaseScreen> {
                       border: OutlineInputBorder(),
                     )),
                 SizedBox(height: 20),
-                Row(
-                  children: [
-                    Icon(
-                      FontAwesomeIcons.person,
-                      size: 80,
-                      color: ColorConstants.commonbackground,
-                    ),
-                    Icon(
-                      FontAwesomeIcons.add,
-                      size: 60,
-                      color: ColorConstants.commonbackground,
-                    ),
-                  ],
+                InkWell(
+                  onTap: () {
+                    Get.to(() => ManagecaseScreen());
+                  },
+                  child: Row(
+                    children: [
+                      Icon(
+                        FontAwesomeIcons.person,
+                        size: 80,
+                        color: ColorConstants.commonbackground,
+                      ),
+                      Icon(
+                        FontAwesomeIcons.add,
+                        size: 60,
+                        color: ColorConstants.commonbackground,
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 20),
                 Row(

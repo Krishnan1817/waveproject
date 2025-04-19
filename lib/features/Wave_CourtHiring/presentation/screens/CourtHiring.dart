@@ -210,7 +210,7 @@ class _CourtHiringScreenState extends State<CourtHiringScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              'NBM',
+                              'NBW',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -220,28 +220,29 @@ class _CourtHiringScreenState extends State<CourtHiringScreen> {
                         ),
                       ),
                       SizedBox(width: 8),
+                      Icon(Icons.calendar_month,size: 40,)
                       // Add or Remove button
-                      GestureDetector(
-                        onTap: () {
-                          if (index == 0) {
-                            _addRow();
-                          } else {
-                            _removeRow(index);
-                          }
-                        },
-                        child: Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: index == 0 ? Colors.green : Colors.red,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            index == 0 ? Icons.add : Icons.remove,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     if (index == 0) {
+                      //       _addRow();
+                      //     } else {
+                      //       _removeRow(index);
+                      //     }
+                      //   },
+                      //   child: Container(
+                      //     width: 40,
+                      //     height: 40,
+                      //     decoration: BoxDecoration(
+                      //       color: index == 0 ? Colors.green : Colors.red,
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //     child: Icon(
+                      //       index == 0 ? Icons.add : Icons.remove,
+                      //       color: Colors.white,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 );
@@ -303,7 +304,7 @@ class _CourtHiringScreenState extends State<CourtHiringScreen> {
                       borderRadius: BorderRadius.circular(12),
                       child: Center(
                         child: Text(
-                          "Save and Back",
+                          "Save and Exit",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_physical_status.dart';
-import 'package:waveproject/features/Wave_AddProfile/presentation/screens/Add_profile.dart';
 import 'package:waveproject/utils/const/color_const.dart';
 
 class Socialnetwork extends StatefulWidget {
@@ -12,35 +11,61 @@ class Socialnetwork extends StatefulWidget {
 }
 
 class _SocialnetworkState extends State<Socialnetwork> {
-  String? selectedFamily;
-  final List<String> familyList = ["Family A", "Family B", "Family C"];
+  final List<String> familyList = [
+    "Father",
+    "Mother",
+    "Wife",
+    "Brother",
+    "Son",
+    "Daughter",
+    "Advocate",
+    "Concubine"
+  ];
 
-  void _showFamilySelection() {
-    showModalBottomSheet(
+  List<Map<String, dynamic>> dynamicRows = [
+    {"relation": null, "controller": TextEditingController()},
+  ];
+
+  void _showFamilySelection(int index) async {
+    String? selected = await showModalBottomSheet<String>(
       context: context,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
       ),
       builder: (context) {
-        return Container(
+        return ListView(
           padding: EdgeInsets.all(15),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: familyList.map((family) {
-              return ListTile(
-                title: Text(family),
-                onTap: () {
-                  setState(() {
-                    selectedFamily = family;
-                  });
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
-          ),
+          shrinkWrap: true,
+          children: familyList.map((family) {
+            return ListTile(
+              title: Text(family),
+              onTap: () {
+                Navigator.pop(context, family);
+              },
+            );
+          }).toList(),
         );
       },
     );
+
+    if (selected != null) {
+      setState(() {
+        dynamicRows[index]["relation"] = selected;
+      });
+    }
+  }
+
+  void _addRow() {
+    setState(() {
+      dynamicRows
+          .add({"relation": null, "controller": TextEditingController()});
+    });
+  }
+
+  void _removeRow(int index) {
+    setState(() {
+      dynamicRows.removeAt(index);
+    });
   }
 
   @override
@@ -55,62 +80,76 @@ class _SocialnetworkState extends State<Socialnetwork> {
         title: Text('Social Network', style: TextStyle(color: Colors.white)),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 15),
+        padding: EdgeInsets.all(15),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 25),
             _buildIconTitleRow(),
             SizedBox(height: 20),
-            _buildSelectionContainer("Advocate"),
-            SizedBox(height: 20),
-            _buildSelectionContainer("Concubine"),
-            SizedBox(height: 20),
-            _buildDropdownContainer(),
-            SizedBox(height: 20),
-            Text(
-              'Mother     :  ',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.black),
-            ),
-            Text(
-              'wife     :  ',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.black),
-            ),
-            Text(
-              'Brother     :  ',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.black),
-            ),
-            Text(
-              'Sister     :  ',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.black),
-            ),
-            Text(
-              'Daughter     :  ',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.black),
-            ),
-            Text(
-              'Son     :  ',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.black),
-            ),
-            SizedBox(height: 20),
+            ...dynamicRows.asMap().entries.map((entry) {
+              int index = entry.key;
+              var row = entry.value;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: GestureDetector(
+                        onTap: () => _showFamilySelection(index),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 15),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black, width: 2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                row["relation"] ?? "Select",
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black),
+                              ),
+                              Icon(Icons.arrow_drop_down, color: Colors.black),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      flex: 5,
+                      child: TextFormField(
+                        controller: row["controller"],
+                        decoration: InputDecoration(
+                          hintText: "Enter Name",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                        color: index == 0 ? Colors.green : Colors.red,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: index == 0 ? _addRow : () => _removeRow(index),
+                        child: Icon(
+                          index == 0 ? Icons.add : Icons.remove,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }),
+            Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -179,9 +218,6 @@ class _SocialnetworkState extends State<Socialnetwork> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            ),
           ],
         ),
       ),
@@ -210,51 +246,6 @@ class _SocialnetworkState extends State<Socialnetwork> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildSelectionContainer(String title) {
-    return GestureDetector(
-      onTap: () {
-        Get.to(() => AddProfilePage());
-      },
-      child: Container(
-        width: double.infinity,
-        height: 60,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Center(
-          child: Text(
-            title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDropdownContainer() {
-    return GestureDetector(
-      onTap: _showFamilySelection,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 2),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              selectedFamily ?? "Select Family",
-              style: TextStyle(fontSize: 16,color: Colors.black),
-            ),
-            Icon(Icons.arrow_drop_down, color: Colors.black),
-          ],
-        ),
-      ),
     );
   }
 }

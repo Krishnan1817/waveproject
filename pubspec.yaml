@@ -57,6 +57,7 @@ dependencies:
   local_auth:
   url_launcher:
   location:
+  image_picker:
 
 dev_dependencies:
   flutter_test:

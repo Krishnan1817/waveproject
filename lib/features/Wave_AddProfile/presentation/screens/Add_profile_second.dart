@@ -23,20 +23,50 @@ class _AddProfile2State extends State<AddProfile2> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return Container(
-          padding: EdgeInsets.all(16),
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(items[index]),
-                onTap: () {
-                  onSelect(items[index]);
-                  Navigator.pop(context);
-                },
-              );
-            },
-          ),
+        TextEditingController searchController = TextEditingController();
+        List<String> filteredItems = List.from(items);
+
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            void filterSearch(String query) {
+              final results = items
+                  .where((item) =>
+                      item.toLowerCase().contains(query.toLowerCase()))
+                  .toList();
+              setModalState(() => filteredItems = results);
+            }
+
+            return Container(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      hintText: 'Search...',
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    onChanged: filterSearch,
+                  ),
+                  SizedBox(height: 16),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: filteredItems.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(filteredItems[index]),
+                          onTap: () {
+                            onSelect(filteredItems[index]);
+                            Navigator.pop(context);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         );
       },
     );
@@ -46,12 +76,22 @@ class _AddProfile2State extends State<AddProfile2> {
       Function(String) onSelect) {
     return InkWell(
       onTap: () => _showBottomSheet(context, options, onSelect),
-      child: InputDecorator(
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.black),
+          borderRadius: BorderRadius.circular(8),
         ),
-        child: Text(value ?? "Select $label"),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              value ?? "Select $label",
+              style: TextStyle(fontSize: 16),
+            ),
+            Icon(Icons.keyboard_arrow_down),
+          ],
+        ),
       ),
     );
   }
@@ -87,15 +127,14 @@ class _AddProfile2State extends State<AddProfile2> {
                   ),
                   child: Icon(Icons.people, color: Colors.white),
                 ),
-                SizedBox(
-                  width: 20,
-                ),
+                SizedBox(width: 20),
                 Text(
                   'Social Status',
                   style: TextStyle(
-                      color: ColorConstants.commonbackground,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
+                    color: ColorConstants.commonbackground,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -210,9 +249,7 @@ class _AddProfile2State extends State<AddProfile2> {
                 ),
               ],
             ),
-            SizedBox(
-              height: 10,
-            )
+            SizedBox(height: 10),
           ],
         ),
       ),
